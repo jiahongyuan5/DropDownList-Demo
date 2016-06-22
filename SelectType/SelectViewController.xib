@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SelectViewController">
+            <connections>
+                <outlet property="tableView" destination="lOH-lz-RcR" id="ofE-bA-xJI"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="507"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sFH-v8-Rff">
+                    <rect key="frame" x="0.0" y="467" width="375" height="40"/>
+                    <color key="backgroundColor" red="0.1450980392" green="0.71372549019999998" blue="0.92941176469999998" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="UNG-kE-CbO"/>
+                    </constraints>
+                    <state key="normal" title="确定">
+                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="handleOKButtonAction:" destination="-1" eventType="touchUpInside" id="pmc-VA-Y49"/>
+                    </connections>
+                </button>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="lOH-lz-RcR">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="467"/>
+                    <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="separatorColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="calibratedRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="xnV-2n-63m"/>
+                        <outlet property="delegate" destination="-1" id="Phk-cQ-pqk"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="sFH-v8-Rff" firstAttribute="top" secondItem="lOH-lz-RcR" secondAttribute="bottom" id="5Nm-aC-Fqw"/>
+                <constraint firstItem="lOH-lz-RcR" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Fz3-3y-tJR"/>
+                <constraint firstItem="lOH-lz-RcR" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="PLT-kB-rxG"/>
+                <constraint firstAttribute="trailing" secondItem="sFH-v8-Rff" secondAttribute="trailing" id="UsD-0F-trn"/>
+                <constraint firstAttribute="bottom" secondItem="sFH-v8-Rff" secondAttribute="bottom" id="aDs-0m-QGJ"/>
+                <constraint firstAttribute="trailing" secondItem="lOH-lz-RcR" secondAttribute="trailing" id="anh-x7-U2C"/>
+                <constraint firstItem="sFH-v8-Rff" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="yLC-Ww-RZm"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="275.5" y="129.5"/>
+        </view>
+    </objects>
+</document>
