@@ -54,14 +54,6 @@ UIKIT_EXTERN NSString *const SelectViewControllerTimeKey;
 
 @property (nonatomic) SelectType type;
 @property (nonatomic, weak,nullable) id<SelectViewControllerDelegate> delegate;
-/**
- *  初始化方法
- *
- *  @param selDic 初始化选择的字典，如果为nil将使用默认的设置
- *
- *  @return SelectViewController实例对象
- */
-- (instancetype)initWithSelectDictionary:(nullable NSDictionary *)selDic;
 
 @end
 NS_ASSUME_NONNULL_END

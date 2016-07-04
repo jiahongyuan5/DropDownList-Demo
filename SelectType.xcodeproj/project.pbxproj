@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FE201DCA1D23BF0A00C43E2B /* HYSelectHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FE201DC91D23BF0A00C43E2B /* HYSelectHeaderView.m */; };
+		FE201DCC1D23BF4E00C43E2B /* HYSelectHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FE201DCB1D23BF4E00C43E2B /* HYSelectHeaderView.xib */; };
 		FECF821C1D1905050047A4F2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FECF821B1D1905050047A4F2 /* main.m */; };
 		FECF821F1D1905050047A4F2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FECF821E1D1905050047A4F2 /* AppDelegate.m */; };
 		FECF82221D1905050047A4F2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FECF82211D1905050047A4F2 /* ViewController.m */; };
@@ -28,17 +30,17 @@
 		FECF824D1D190BE10047A4F2 /* xuanzhong.png in Resources */ = {isa = PBXBuildFile; fileRef = FECF823E1D190BE10047A4F2 /* xuanzhong.png */; };
 		FECF824E1D190BE10047A4F2 /* xuanzhong@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FECF823F1D190BE10047A4F2 /* xuanzhong@2x.png */; };
 		FECF824F1D190BE10047A4F2 /* xuanzhong@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = FECF82401D190BE10047A4F2 /* xuanzhong@3x.png */; };
-		FECF825B1D1943F80047A4F2 /* NormalTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FECF825A1D1943F80047A4F2 /* NormalTableViewCell.m */; };
 		FECF82671D19484B0047A4F2 /* SelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FECF82651D19484B0047A4F2 /* SelectViewController.m */; };
 		FECF82681D19484B0047A4F2 /* SelectViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FECF82661D19484B0047A4F2 /* SelectViewController.xib */; };
 		FECF826C1D19493E0047A4F2 /* SelectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FECF826A1D19493E0047A4F2 /* SelectTableViewCell.m */; };
 		FECF826D1D19493E0047A4F2 /* SelectTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FECF826B1D19493E0047A4F2 /* SelectTableViewCell.xib */; };
-		FECF82711D1950640047A4F2 /* IntervalTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FECF826F1D1950640047A4F2 /* IntervalTableViewCell.m */; };
-		FECF82721D1950640047A4F2 /* IntervalTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FECF82701D1950640047A4F2 /* IntervalTableViewCell.xib */; };
 		FECF82741D1964330047A4F2 /* SelectList.plist in Resources */ = {isa = PBXBuildFile; fileRef = FECF82731D1964330047A4F2 /* SelectList.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FE201DC81D23BF0A00C43E2B /* HYSelectHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYSelectHeaderView.h; sourceTree = "<group>"; };
+		FE201DC91D23BF0A00C43E2B /* HYSelectHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYSelectHeaderView.m; sourceTree = "<group>"; };
+		FE201DCB1D23BF4E00C43E2B /* HYSelectHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HYSelectHeaderView.xib; sourceTree = "<group>"; };
 		FECF82171D1905050047A4F2 /* SelectType.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SelectType.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FECF821B1D1905050047A4F2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FECF821D1D1905050047A4F2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -64,17 +66,12 @@
 		FECF823E1D190BE10047A4F2 /* xuanzhong.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = xuanzhong.png; sourceTree = "<group>"; };
 		FECF823F1D190BE10047A4F2 /* xuanzhong@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xuanzhong@2x.png"; sourceTree = "<group>"; };
 		FECF82401D190BE10047A4F2 /* xuanzhong@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "xuanzhong@3x.png"; sourceTree = "<group>"; };
-		FECF82591D1943F80047A4F2 /* NormalTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NormalTableViewCell.h; sourceTree = "<group>"; };
-		FECF825A1D1943F80047A4F2 /* NormalTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NormalTableViewCell.m; sourceTree = "<group>"; };
 		FECF82641D19484B0047A4F2 /* SelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectViewController.h; sourceTree = "<group>"; };
 		FECF82651D19484B0047A4F2 /* SelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectViewController.m; sourceTree = "<group>"; };
 		FECF82661D19484B0047A4F2 /* SelectViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SelectViewController.xib; sourceTree = "<group>"; };
 		FECF82691D19493E0047A4F2 /* SelectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectTableViewCell.h; sourceTree = "<group>"; };
 		FECF826A1D19493E0047A4F2 /* SelectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectTableViewCell.m; sourceTree = "<group>"; };
 		FECF826B1D19493E0047A4F2 /* SelectTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SelectTableViewCell.xib; sourceTree = "<group>"; };
-		FECF826E1D1950640047A4F2 /* IntervalTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntervalTableViewCell.h; sourceTree = "<group>"; };
-		FECF826F1D1950640047A4F2 /* IntervalTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntervalTableViewCell.m; sourceTree = "<group>"; };
-		FECF82701D1950640047A4F2 /* IntervalTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IntervalTableViewCell.xib; sourceTree = "<group>"; };
 		FECF82731D1964330047A4F2 /* SelectList.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SelectList.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -115,14 +112,12 @@
 				FECF82641D19484B0047A4F2 /* SelectViewController.h */,
 				FECF82651D19484B0047A4F2 /* SelectViewController.m */,
 				FECF82661D19484B0047A4F2 /* SelectViewController.xib */,
-				FECF82591D1943F80047A4F2 /* NormalTableViewCell.h */,
-				FECF825A1D1943F80047A4F2 /* NormalTableViewCell.m */,
 				FECF82691D19493E0047A4F2 /* SelectTableViewCell.h */,
 				FECF826A1D19493E0047A4F2 /* SelectTableViewCell.m */,
 				FECF826B1D19493E0047A4F2 /* SelectTableViewCell.xib */,
-				FECF826E1D1950640047A4F2 /* IntervalTableViewCell.h */,
-				FECF826F1D1950640047A4F2 /* IntervalTableViewCell.m */,
-				FECF82701D1950640047A4F2 /* IntervalTableViewCell.xib */,
+				FE201DC81D23BF0A00C43E2B /* HYSelectHeaderView.h */,
+				FE201DC91D23BF0A00C43E2B /* HYSelectHeaderView.m */,
+				FE201DCB1D23BF4E00C43E2B /* HYSelectHeaderView.xib */,
 				FECF82231D1905050047A4F2 /* Main.storyboard */,
 				FECF82731D1964330047A4F2 /* SelectList.plist */,
 				FECF82311D190BE10047A4F2 /* 筛选图标 */,
@@ -236,7 +231,7 @@
 				FECF82451D190BE10047A4F2 /* Select@2x.png in Resources */,
 				FECF822A1D1905050047A4F2 /* LaunchScreen.storyboard in Resources */,
 				FECF82431D190BE10047A4F2 /* home_house_screen_area_parker_PxCook.png in Resources */,
-				FECF82721D1950640047A4F2 /* IntervalTableViewCell.xib in Resources */,
+				FE201DCC1D23BF4E00C43E2B /* HYSelectHeaderView.xib in Resources */,
 				FECF82461D190BE10047A4F2 /* Select@3x.png in Resources */,
 				FECF826D1D19493E0047A4F2 /* SelectTableViewCell.xib in Resources */,
 				FECF82271D1905050047A4F2 /* Assets.xcassets in Resources */,
@@ -257,9 +252,8 @@
 				FECF826C1D19493E0047A4F2 /* SelectTableViewCell.m in Sources */,
 				FECF821F1D1905050047A4F2 /* AppDelegate.m in Sources */,
 				FECF821C1D1905050047A4F2 /* main.m in Sources */,
-				FECF82711D1950640047A4F2 /* IntervalTableViewCell.m in Sources */,
+				FE201DCA1D23BF0A00C43E2B /* HYSelectHeaderView.m in Sources */,
 				FECF82671D19484B0047A4F2 /* SelectViewController.m in Sources */,
-				FECF825B1D1943F80047A4F2 /* NormalTableViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

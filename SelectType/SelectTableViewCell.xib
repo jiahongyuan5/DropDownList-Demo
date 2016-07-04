@@ -39,12 +39,11 @@
                     <constraint firstItem="UaM-Z2-iXh" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="gBY-r5-684"/>
                 </constraints>
             </tableViewCellContentView>
-            <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
                 <outlet property="selectImg" destination="fxh-VA-RGq" id="Tzw-gn-CL2"/>
                 <outlet property="titleLabel" destination="UaM-Z2-iXh" id="PFz-yf-NDg"/>
             </connections>
-            <point key="canvasLocation" x="130.5" y="207"/>
+            <point key="canvasLocation" x="241.5" y="182"/>
         </tableViewCell>
     </objects>
     <resources>
