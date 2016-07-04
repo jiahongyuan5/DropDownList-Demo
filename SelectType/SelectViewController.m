@@ -8,7 +8,7 @@
 
 #import "SelectViewController.h"
 #import "SelectTableViewCell.h"
-#import "IntervalTableViewCell.h"
+#import "HYSelectHeaderView.h"
 
 #define UIColorFromRGB(rgbColor) [UIColor colorWithRed:((rgbColor & 0xFF0000) >> 16) / 255.0 green:((rgbColor & 0xFF00) >> 8) / 255.0 blue:(rgbColor & 0xFF) / 255.0 alpha:1.0];
 
@@ -26,28 +26,33 @@
 @interface SelectViewController ()<UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSArray *datasource; //数据源
-
 @property (nonatomic, strong) NSIndexPath *selectIndex; //被选中的行
-
-@property (nonatomic, strong) NSDictionary *originDic; //初始化的字典
-
-@property (nonatomic, strong) NSMutableDictionary *resultDic;//返回结果的字典
+@property (nonatomic, copy) NSString *selectTitle;//选中的标题
+@property (nonatomic, copy) NSString *customMinValue;//自定义最小值
+@property (nonatomic, copy) NSString *customMaxValue;//自定义最大值
+@property (nonatomic, strong) NSDictionary *sourceDic;//数据源
+@property (nonatomic, strong) NSMutableDictionary<NSString *, id> *indexPathDic;//每个分类算选中的数据
+@property (nonatomic, strong) NSMutableDictionary<NSString *,NSString *> *titleDic;
 
 @end
 
 @implementation SelectViewController
 
-- (NSMutableDictionary *)resultDic{
-    if (!_resultDic) {
-        self.resultDic = [NSMutableDictionary dictionary];
-    }
-    return _resultDic;
-}
-
-- (instancetype)initWithSelectDictionary:(NSDictionary *)selDic{
+- (instancetype)init
+{
     self = [super init];
     if (self) {
-        self.originDic = selDic;
+        self.titleDic = [NSMutableDictionary dictionary];
+        self.indexPathDic = [NSMutableDictionary dictionary];
+        self.sourceDic = [NSMutableDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SelectList" ofType:@"plist"]];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+        NSArray *keyArr = @[SelectViewControllerRegionKey, SelectViewControllerPriceKey, SelectViewControllerAreaKey, SelectViewControllerTimeKey];
+        for (int i = 0; i < keyArr.count; i++) {
+            NSString * key= keyArr[i];
+            NSArray *titleArr = self.sourceDic[key];
+            [self.indexPathDic setObject:indexPath forKey:key];
+            [self.titleDic setObject:titleArr[indexPath.row] forKey:key];
+        }
     }
     return self;
 }
@@ -56,10 +61,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self.tableView registerNib:[UINib nibWithNibName:@"SelectTableViewCell" bundle:nil] forCellReuseIdentifier:@"SelectCell"];
-    [self.tableView registerNib:[UINib nibWithNibName:@"IntervalTableViewCell" bundle:nil] forCellReuseIdentifier:@"IntervalCell"];
-    if (self.originDic) {
-        self.resultDic = [self convertIndexPathDictionary:self.originDic];
-    }
+    [self.tableView registerNib:[UINib nibWithNibName:@"HYSelectHeaderView" bundle:[NSBundle mainBundle]] forHeaderFooterViewReuseIdentifier:@"Header"];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -85,57 +89,71 @@
 
 #pragma mark - tableView代理方法
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    if (self.type == SelectTypePrice || self.type == SelectTypeArea) {
+        return 44;
+    }
+    return 0;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    
+    if (self.type == SelectTypePrice) {
+       HYSelectHeaderView *headerView = (HYSelectHeaderView *)[tableView dequeueReusableHeaderFooterViewWithIdentifier:@"Header"];
+        headerView.type = HYSelectHeaderViewTypePrice;
+        headerView.fromTextField.delegate = self;
+        headerView.toTextField.delegate = self;
+        NSLog(@"%@",headerView.contentView);
+        return headerView;
+    }else if (self.type == SelectTypeArea){
+        HYSelectHeaderView *headerView = (HYSelectHeaderView *)[tableView dequeueReusableHeaderFooterViewWithIdentifier:@"Header"];
+        headerView.type = HYSelectHeaderViewTypeArea;
+        headerView.fromTextField.delegate = self;
+        headerView.toTextField.delegate = self;
+        NSLog(@"%@",headerView.contentView);
+
+        return headerView;
+    }
+    return nil;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.datasource.count;
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.row == 0 && (self.type == SelectTypeArea || self.type == SelectTypePrice)) {
-        IntervalTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"IntervalCell" forIndexPath:indexPath];
-        cell.fromTextField.delegate = self;
-        cell.toTextField.delegate = self;
-        [cell setValueIntervalWithString:self.datasource[self.selectIndex.row]];
-        cell.titleLabel.text = self.datasource[indexPath.row];
-        [self setSeparatorInset:UIEdgeInsetsMake(0, 15, 0, 0) cell:cell indexPath:indexPath];
-        return cell;
-    }
     SelectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SelectCell" forIndexPath:indexPath];
     cell.titleLabel.text = self.datasource[indexPath.row];
-    [self setSeparatorInset:UIEdgeInsetsMake(0, 15, 0, 0) cell:cell indexPath:indexPath];
+    if (self.selectIndex && indexPath.row == self.selectIndex.row) {
+        cell.state = SelectStateChecked;
+    }else{
+        cell.state = SelectStateUnchecked;
+    }
+    cell.layoutMargins = UIEdgeInsetsZero;
+    cell.separatorInset = UIEdgeInsetsMake(0, 15, 0, 0);
+    if (indexPath.row == [tableView numberOfRowsInSection:0] - 1) {
+        cell.layoutMargins = UIEdgeInsetsZero;
+        cell.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    }
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    if ([cell isKindOfClass:[SelectTableViewCell class]]) {
-        if (![self.selectIndex isEqual:indexPath]) {
-            SelectTableViewCell *deselCell = [tableView cellForRowAtIndexPath:self.selectIndex];
-            [deselCell.selectImg setImage:[UIImage imageNamed:@"xuanzhong"]];
-            SelectTableViewCell *selCell = (SelectTableViewCell *)cell;
-            [selCell.selectImg setImage:[UIImage imageNamed:@"Select"]];
-            self.selectIndex = indexPath;
-            switch (self.type) {
-                case SelectTypeRegion:
-                    [self.resultDic setValue:selCell.titleLabel.text forKey:SelectViewControllerRegionKey];
-                    break;
-                case SelectTypePrice:
-                case SelectTypeArea:
-                {
-                    IntervalTableViewCell *cell = [tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-                    [cell setValueIntervalWithString:selCell.textLabel.text];
-                }
-                    break;
-                case SelectTypeTime:
-                    [self.resultDic setValue:selCell.titleLabel.text forKey:SelectViewControllerTimeKey];
-                    break;
-                default:
-                    break;
-                    
-            }
-        }
-        
+    if (self.type == SelectTypePrice || self.type == SelectTypeArea) {
+        HYSelectHeaderView *headerView = (HYSelectHeaderView *)[tableView headerViewForSection:0];
+        headerView.fromTextField.text = @"";
+        headerView.toTextField.text = @"";
+        self.customMinValue = nil;
+        self.customMaxValue = nil;
+    }
+    if (![self.selectIndex isEqual:indexPath]) {
+        SelectTableViewCell *deselCell = [tableView cellForRowAtIndexPath:self.selectIndex];
+        deselCell.state = SelectStateUnchecked;
+        SelectTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.state = SelectStateChecked;
+        self.selectIndex = indexPath;
+        self.selectTitle = cell.titleLabel.text;
     }
 }
 
@@ -144,7 +162,7 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     SelectTableViewCell *cell = [self.tableView cellForRowAtIndexPath:self.selectIndex];
-    [cell.selectImg setImage:[UIImage imageNamed:@"xuanzhong"]];
+    cell.state = SelectStateUnchecked;
     return YES;
 }
 
@@ -153,25 +171,15 @@
     return YES;
 }
 
-#pragma mark - 私有方法
-/**
- *  转换初始的只含indexPath的字典为含选择内容的字典
- *
- *  @param indexPathDic 含indexPath的字典
- *
- *  @return 含选择内容的字典
- */
-- (NSMutableDictionary *)convertIndexPathDictionary:(NSDictionary *)indexPathDic{
-    NSDictionary *sourceDic = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SelectList" ofType:@"plist"]];
-    NSArray *keyArray = @[SelectViewControllerRegionKey,SelectViewControllerPriceKey,SelectViewControllerAreaKey,SelectViewControllerTimeKey];
-    NSMutableDictionary *messageDic = [NSMutableDictionary dictionary];
-    for (int i = 0; i < keyArray.count; i++) {
-        NSArray *dataArr = sourceDic[keyArray[i]];
-        NSString *message = [dataArr objectAtIndex:[indexPathDic[keyArray[i]] row]];
-        [messageDic setObject:message forKey:keyArray[i]];
-    }
-    return messageDic;
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+        if (textField.tag == 1001) {
+            self.customMinValue = textField.text;
+        }else if (textField.tag == 1002){
+            self.customMaxValue = textField.text;
+        }
 }
+
+#pragma mark - 私有方法
 
 /**
  *  点击确定按钮的响应方法
@@ -179,35 +187,54 @@
  *  @param sender 点击的按钮
  */
 - (IBAction)handleOKButtonAction:(UIButton *)sender {
-    if (self.type == SelectTypePrice || self.type == SelectTypeArea) {
-        [self saveSelectResult];
-    }
+    [self saveSelectResult];
     [UIView animateWithDuration:0.5 animations:^{
         self.view.frame = CGRectMake(0, 116 - 507, 375, 507);
     } completion:^(BOOL finished) {
         [self.view removeFromSuperview];
         [self removeFromParentViewController];
         if ([self.delegate respondsToSelector:@selector(selectViewController:didEndSelectionWithResult:)]) {
-            [self.delegate selectViewController:self didEndSelectionWithResult:[self resultDictionary]];
+            [self.delegate selectViewController:self didEndSelectionWithResult:self.titleDic];
         }
     }];
     
 }
 
-- (NSDictionary *)resultDictionary{
-    return [NSDictionary dictionaryWithDictionary:self.resultDic];
-}
-
 
 - (void)saveSelectResult{
-    if (self.type == SelectTypePrice) {
-        IntervalTableViewCell *intervalCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-        NSString *resultStr = [NSString stringWithFormat:@"%@-%@W",intervalCell.fromTextField.text,intervalCell.toTextField.text];
-        [self.resultDic setObject:resultStr forKey:SelectViewControllerPriceKey];
-    }else if (self.type == SelectTypeArea){
-        IntervalTableViewCell *intervalCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-        NSString *resultStr = [NSString stringWithFormat:@"%@-%@",intervalCell.fromTextField.text,intervalCell.toTextField.text];
-        [self.resultDic setObject:resultStr forKey:SelectViewControllerAreaKey];
+    switch (self.type) {
+        case SelectTypeRegion:
+            [self.indexPathDic setObject:self.selectIndex forKey:SelectViewControllerRegionKey];
+            [self.titleDic setObject:self.selectTitle forKey:SelectViewControllerRegionKey];
+            break;
+        case SelectTypePrice:
+            
+            if (self.customMinValue && ![self.customMinValue isEqualToString:@""] && self.customMaxValue && ![self.customMaxValue isEqualToString:@""]) {
+                [self.indexPathDic setObject:[NSNull null] forKey:SelectViewControllerPriceKey];
+                [self.titleDic setObject:[self.customMinValue stringByAppendingFormat:@"-%@", self.customMaxValue] forKey:SelectViewControllerPriceKey];
+                self.selectIndex = nil;
+            }else{
+                [self.indexPathDic setObject:self.selectIndex forKey:SelectViewControllerPriceKey];
+                [self.titleDic setObject:self.selectTitle forKey:SelectViewControllerPriceKey];
+            }
+            break;
+        case SelectTypeArea:
+            if (self.customMinValue && ![self.customMinValue isEqualToString:@""] && self.customMaxValue && ![self.customMaxValue isEqualToString:@""]) {
+                [self.indexPathDic setObject:[NSNull null] forKey:SelectViewControllerAreaKey];
+                [self.titleDic setObject:[self.customMinValue stringByAppendingFormat:@"-%@",self.customMaxValue] forKey:SelectViewControllerAreaKey];
+                self.selectIndex = nil;
+
+            }else{
+                [self.indexPathDic setObject:self.selectIndex forKey:SelectViewControllerAreaKey];
+                [self.titleDic setObject:self.selectTitle forKey:SelectViewControllerAreaKey];
+            }
+            break;
+        case SelectTypeTime:
+            [self.indexPathDic setObject:self.selectIndex forKey:SelectViewControllerTimeKey];
+            [self.titleDic setObject:self.selectTitle forKey:SelectViewControllerTimeKey];
+            break;
+        default:
+            break;
     }
 }
 
@@ -218,59 +245,51 @@
  */
 - (void)setType:(SelectType)type{
     if (_type != type) {
-        if (_type != 0) {
-            [self saveSelectResult];
-        }
+        [self saveSelectResult];
         _type = type;
-        SelectTableViewCell *cell = [self.tableView cellForRowAtIndexPath:self.selectIndex];
-        [cell.selectImg setImage:[UIImage imageNamed:@"xuanzhong"]];
-        NSDictionary *sourceDic = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SelectList" ofType:@"plist"]];
-        NSIndexPath *indexPath = nil;
-        switch (type) {
-            case SelectTypeRegion:
-                self.datasource = sourceDic[SelectViewControllerRegionKey];
-                indexPath = self.originDic[SelectViewControllerRegionKey] ?: [NSIndexPath indexPathForRow:0 inSection:0];
-                break;
-            case SelectTypePrice:
-                self.datasource = sourceDic[SelectViewControllerPriceKey];
-                indexPath = self.originDic[SelectViewControllerPriceKey] ?: [NSIndexPath indexPathForRow:1 inSection:0];
-                break;
-            case SelectTypeArea:
-                self.datasource = sourceDic[SelectViewControllerAreaKey];
-                indexPath = self.originDic[SelectViewControllerAreaKey] ?: [NSIndexPath indexPathForRow:1 inSection:0];
-                break;
-            case SelectTypeTime:
-                self.datasource = sourceDic[SelectViewControllerTimeKey];
-                indexPath = self.originDic[SelectViewControllerTimeKey] ?: [NSIndexPath indexPathForRow:0 inSection:0];
-                break;
-            default:
-                break;
-        }
-        self.selectIndex = indexPath;
-        if ([self.tableView numberOfRowsInSection:0] > 0) {
-            [self.tableView reloadData];
-            SelectTableViewCell *cell = [self.tableView cellForRowAtIndexPath:self.selectIndex];
-            [cell.selectImg setImage:[UIImage imageNamed:@"Select"]];
-        }
+        [self configureTableView];
     }
     
 }
-/**
- *  为每一个Cell添加分割线
- *
- *  @param inset     分割线的边距，只对左、右边距有效
- *  @param cell      需要添加分割线的Cell
- *  @param indexPath cell在tableView中的位置
- */
-- (void)setSeparatorInset:(UIEdgeInsets)inset cell:(UITableViewCell *)cell indexPath:(NSIndexPath *)indexPath{
-    CGRect separatorframe = CGRectMake(inset.left, cell.contentView.bounds.size.height - 0.5, cell.contentView.bounds.size.width - inset.left - inset.right, 0.5);
-    UIView *separator = [[UIView alloc] initWithFrame:separatorframe];
-    separator.backgroundColor = UIColorFromRGB(0xaaaaaa);
-    if ([self.tableView numberOfRowsInSection:indexPath.section] == indexPath.row + 1) {
-        separatorframe.origin.x = 0;
-        separator.frame = separatorframe;
+
+- (void)configureTableView{
+    switch (self.type) {
+        case SelectTypeRegion:
+            self.datasource = self.sourceDic[SelectViewControllerRegionKey];
+            self.selectIndex = self.indexPathDic[SelectViewControllerRegionKey];
+            self.selectTitle = self.datasource[self.selectIndex.row];
+            break;
+        case SelectTypePrice:
+            self.datasource = self.sourceDic[SelectViewControllerPriceKey];
+            if ([self.indexPathDic[SelectViewControllerPriceKey] isEqual:[NSNull null]]) {
+                self.selectIndex = nil;
+            }else{
+                self.selectIndex = self.indexPathDic[SelectViewControllerPriceKey];
+            }
+            self.selectTitle = self.datasource[self.selectIndex.row];
+            break;
+        case SelectTypeArea:
+            self.datasource = self.sourceDic[SelectViewControllerAreaKey];
+            if ([self.indexPathDic[SelectViewControllerPriceKey] isEqual:[NSNull null]]) {
+                self.selectIndex = nil;
+            }else{
+                self.selectIndex = self.indexPathDic[SelectViewControllerAreaKey];
+            }
+            self.selectTitle = self.datasource[self.selectIndex.row];
+            break;
+        case SelectTypeTime:
+            self.datasource = self.sourceDic[SelectViewControllerTimeKey];
+            self.selectIndex = self.indexPathDic[SelectViewControllerTimeKey];
+            self.selectTitle = self.datasource[self.selectIndex.row];
+            break;
+        default:
+            break;
     }
-    [cell.contentView addSubview:separator];
+    if (self.tableView) {
+        [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
+//        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationRight];
+        [self.tableView reloadData];
+    }
 }
 
 @end

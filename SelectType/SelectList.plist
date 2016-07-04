@@ -15,7 +15,6 @@
 	</array>
 	<key>Price</key>
 	<array>
-		<string>价格区间(元)</string>
 		<string>不限</string>
 		<string>50W以下</string>
 		<string>50-100W</string>
@@ -26,7 +25,6 @@
 	</array>
 	<key>Area</key>
 	<array>
-		<string>面积</string>
 		<string>不限</string>
 		<string>50-100</string>
 		<string>100-150</string>

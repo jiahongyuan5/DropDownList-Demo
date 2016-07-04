@@ -8,9 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSInteger, SelectState) {
+    SelectStateUnchecked = 0,
+    SelectStateChecked
+};
 @interface SelectTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *selectImg;
-
-
+@property (nonatomic) SelectState state;
 @end

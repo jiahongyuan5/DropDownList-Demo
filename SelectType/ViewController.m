@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import "SelectViewController.h"
-#import "NormalTableViewCell.h"
 #ifdef DEBUG
 
 #define DLog(format,...) NSLog(@"%s[Line %d]"format,__PRETTY_FUNCTION__,__LINE__,##__VA_ARGS__)
@@ -25,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *timeBtn;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic) NSInteger selectTag;
+@property (nonatomic, strong) SelectViewController *selectVC;
 @end
 
 @implementation ViewController
@@ -32,6 +32,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    self.selectVC = [[SelectViewController alloc] init];
+    self.selectVC.view.frame = CGRectMake(0, 116 - 507, 375, 507);
+    self.selectVC.delegate = self;
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -49,59 +53,48 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    NormalTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
     return cell;
 }
 
 - (IBAction)handleSelectButtonAction:(UIButton *)sender{
-    SelectViewController *selectVC = nil;
+    switch (sender.tag - 1000) {
+        case 1:
+            self.selectVC.type = SelectTypeRegion;
+            break;
+        case 2:
+            self.selectVC.type = SelectTypePrice;
+            break;
+        case 3:
+            self.selectVC.type = SelectTypeArea;
+            break;
+        case 4:
+            self.selectVC.type = SelectTypeTime;
+            break;
+        default:
+            break;
+            
+    }
     if (self.selectTag == 0) {
-        NSIndexPath *regionIndex = [NSIndexPath indexPathForRow:5 inSection:0];
-        NSIndexPath *priceIndex = [NSIndexPath indexPathForRow:3 inSection:0];
-        NSIndexPath *areaIndex = [NSIndexPath indexPathForRow:2 inSection:0];
-        NSIndexPath *timeIndex = [NSIndexPath indexPathForRow:1 inSection:0];
-        NSDictionary *selDictionary = @{SelectViewControllerRegionKey:regionIndex,SelectViewControllerPriceKey:priceIndex,SelectViewControllerAreaKey:areaIndex,SelectViewControllerTimeKey:timeIndex};
-        selectVC = [[SelectViewController alloc] initWithSelectDictionary:selDictionary];
-        selectVC.view.frame = CGRectMake(0, 116 - 507, 375, 507);
-        selectVC.delegate = self;
-        [self addChildViewController:selectVC];
-        [self.view insertSubview:selectVC.view aboveSubview:self.tableView];
+        [self addChildViewController:self.selectVC];
+        [self.view insertSubview:self.selectVC.view aboveSubview:self.tableView];
         [UIView animateWithDuration:0.5 animations:^{
-            selectVC.view.frame = CGRectMake(0, 116, 375, 507);
+            self.selectVC.view.frame = CGRectMake(0, 116, 375, 502);
         } completion:^(BOOL finished) {
             
         }];
     }
     else{
-        selectVC = [[self childViewControllers] firstObject];
         if (self.selectTag == sender.tag) {
-            SelectViewController *selectVC = [[self childViewControllers] firstObject];
             [UIView animateWithDuration:0.5 animations:^{
-                selectVC.view.frame = CGRectMake(0, 116 - 507, 375, 507);
+                self.selectVC.view.frame = CGRectMake(0, 116 - 507, 375, 502);
             } completion:^(BOOL finished) {
-                [selectVC.view removeFromSuperview];
-                [selectVC removeFromParentViewController];
+                [self.selectVC.view removeFromSuperview];
+                [self.selectVC removeFromParentViewController];
                 self.selectTag = 0;
             }];
             return;
         }
-    }
-    switch (sender.tag - 1000) {
-        case 1:
-            selectVC.type = SelectTypeRegion;
-            break;
-        case 2:
-            selectVC.type = SelectTypePrice;
-            break;
-        case 3:
-            selectVC.type = SelectTypeArea;
-            break;
-        case 4:
-            selectVC.type = SelectTypeTime;
-            break;
-        default:
-            break;
-            
     }
     self.selectTag = sender.tag;
 }
